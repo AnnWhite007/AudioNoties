@@ -21,9 +21,8 @@ public class NoteAdapter extends ArrayAdapter<Note> {
     private ArrayList<Note> listOfNote;
     private LayoutInflater inflater;
 
-    private double startTime = 0;
-    private double finalTime = 0;
-
+//    private double startTime = 0;
+//    private double finalTime = 0;
 
     NoteAdapter(Context context, int resource, ArrayList<Note> listOfNote) {
         super(context, resource, listOfNote);
@@ -32,7 +31,6 @@ public class NoteAdapter extends ArrayAdapter<Note> {
         this.layout = resource;
         this.inflater = LayoutInflater.from(context);
     }
-
 
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -52,7 +50,7 @@ public class NoteAdapter extends ArrayAdapter<Note> {
 
         holder.nameView.setText(note.getName());
         holder.dateCreation.setText(readableDate(note.getId()));
-        if (note.isPlaying().equals("play")) {
+        if (note.getPlaying().equals("play")) {
             holder.imageView.setBackgroundResource(R.drawable.pause);
         } else {
             holder.imageView.setBackgroundResource(R.drawable.play);

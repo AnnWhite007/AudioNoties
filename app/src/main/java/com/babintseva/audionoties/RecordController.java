@@ -10,12 +10,13 @@ public class RecordController {
 
     private final Context context;
     private MediaRecorder mediaRecorder = null;
+
     public RecordController(Context context) {
         this.context = context;
     }
 
     public void start() {
-        Log.d("!!!", "Start");
+        Log.d("!!!", "Start record");
         MediaRecorder mediaRecorder = new MediaRecorder();
 
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -39,7 +40,6 @@ public class RecordController {
     private String getAudioPath() {
         String way = context.getFilesDir().getAbsolutePath() + "/"
                 + System.currentTimeMillis() + ".wav";
-        Log.d("!!!", way);
         return way;
     }
 

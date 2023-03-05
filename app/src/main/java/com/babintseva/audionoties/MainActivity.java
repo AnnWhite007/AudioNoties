@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 audioButton.setBackgroundResource(R.drawable.stop);
                 recordController.start();
 
-                CountDownTimer countDownTimer = new CountDownTimer(60_000, 100) {
+                countDownTimer = new CountDownTimer(60_000, 100) {
                     @Override
                     public void onTick(long l) {
                         int volume = recordController.getVolume();
@@ -94,38 +94,38 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Note note = listOfNoteObjects.get(i);
-                Log.d("!!!", note.isPlaying());
+                Log.d("!!!", note.getPlaying());
                 if (note.getName().equals(workItem)) {
-                    if (note.isPlaying().equals("play")) {
-                        Log.d("!!!", "уже играет");
+                    if (note.getPlaying().equals("play")) {
+                        Log.d("!!!", "play -> pause");
                         note.setPlaying("pause");
                         updateAdapter();
-                        Log.d("!!!", note.isPlaying());
+                        Log.d("!!!", note.getPlaying());
                         mediaPlayer.pause();
                     } else {
-                        Log.d("!!!", "пауза или конец");
+                        Log.d("!!!", "pause/end - > play");
                         note.setPlaying("play");
                         updateAdapter();
-                        Log.d("!!!", note.isPlaying());
+                        Log.d("!!!", note.getPlaying());
                         mediaPlayer.start();
                     }
                 } else {
                     if (mediaPlayer != null) {
-                        Log.d("!!!", "не играет");
+                        Log.d("!!!", "null player");
                         updateAdapter();
                         mediaPlayer.stop();
                         mediaPlayer.reset();
                     }
                     try {
-                        Log.d("!!!", "все заново");
+                        Log.d("!!!", "new player");
                         note.setPlaying("play");
                         workItem = note.getName();
                         updateAdapter();
-                        mediaPlayer = MediaPlayer.create(MainActivity.this, note.getUriAdress());
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, note.getUriAddress());
                         mediaPlayer.start();
 
                     } catch (Exception e) {
-                        Log.e("Exception", "че то не так");
+                        Log.e("Exception", "Problems?");
 
                     }
                 }

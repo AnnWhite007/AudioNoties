@@ -11,18 +11,17 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:clickable="true"
-        android:longClickable="true"
-        >
+        android:longClickable="true">
 
         <TextView
             android:id="@+id/dateCreation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/title"
+            android:clickable="false"
             android:text="Date Time"
             android:textColor="#c8394ba4"
-            tools:textSize="14sp"
-            android:clickable="false"/>
+            tools:textSize="14sp" />
 
         <TextView
             android:id="@+id/noteLengthView"
@@ -31,8 +30,8 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="15dp"
             android:layout_toLeftOf="@id/playOrPause"
-            android:text="Size"
-            android:clickable="false"/>
+            android:clickable="false"
+            android:text="Size" />
 
         <TextView
             android:id="@+id/title"
@@ -41,10 +40,10 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
+            android:clickable="false"
             android:text="Name"
             android:textColor="#394ba4"
-            tools:textSize="16sp"
-            android:clickable="false"/>
+            tools:textSize="16sp" />
 
         <ImageView
             android:id="@+id/playOrPause"
@@ -59,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/dateCreation"
-            android:clickable="false"/>
+            android:clickable="false" />
 
 
     </RelativeLayout>

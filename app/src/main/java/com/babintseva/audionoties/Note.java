@@ -4,14 +4,13 @@ import android.net.Uri;
 
 public class Note {
     private long id;
-
     private String name;
-    private Uri uriAdress;
+    private Uri uriAddress;
     private String isPlaying;
 
-    public Note(long id, String name, String isPlaying, Uri uriAdress) {
+    public Note(long id, String name, String isPlaying, Uri uriAddress) {
         this.id = id;
-        this.uriAdress = uriAdress;
+        this.uriAddress = uriAddress;
         this.name = name;
         this.isPlaying = isPlaying;
     }
@@ -32,7 +31,7 @@ public class Note {
         this.name = name;
     }
 
-    public String isPlaying() {
+    public String getPlaying() {
         return isPlaying;
     }
 
@@ -40,11 +39,11 @@ public class Note {
         isPlaying = playing;
     }
 
-    public Uri getUriAdress() {
-        return uriAdress;
+    public Uri getUriAddress() {
+        return uriAddress;
     }
 
-    public void setUriAdress(Uri uriAdress) {
-        this.uriAdress = uriAdress;
+    public void setUriAddress(Uri uriAddress) {
+        this.uriAddress = uriAddress;
     }
 }
