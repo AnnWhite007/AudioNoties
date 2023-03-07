@@ -50,7 +50,7 @@ public class NoteAdapter extends ArrayAdapter<Note> {
 
         holder.nameView.setText(note.getName());
         holder.dateCreation.setText(readableDate(note.getId()));
-        if (note.getPlaying().equals("play")) {
+        if (note.getPlaying()) {
             holder.imageView.setBackgroundResource(R.drawable.pause);
         } else {
             holder.imageView.setBackgroundResource(R.drawable.play);
@@ -86,7 +86,7 @@ public class NoteAdapter extends ArrayAdapter<Note> {
 
 
     private String readableDate(long d) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy в HH:mm");
         Date date = new Date(d);
         return sdf.format(date);
     }

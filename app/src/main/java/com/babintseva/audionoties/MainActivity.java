@@ -14,6 +14,7 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private NoteAdapter adapter;
     private MediaPlayer mediaPlayer;
 
-    private String workItem = "";
+    private int playingID = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,16 +48,22 @@ public class MainActivity extends AppCompatActivity {
                 new String[]{Manifest.permission.RECORD_AUDIO}, 00);
 
         audioButton = findViewById(R.id.start_button);
+        // кнопка записи аудио
         audioButton.setOnClickListener(view -> {
-            mediaPlayer.stop();
-            mediaPlayer.reset();
+            if (mediaPlayer != null) {
+                mediaPlayer.stop();
+                mediaPlayer.reset();
+                mediaPlayer = null;
+            }
             if (recordController.isAudioRecording()) {
                 audioButton.setBackgroundResource(R.drawable.mic);
                 recordController.stop();
                 stopTimer = true;
                 countDownTimer = null;
                 getListOfObjects();
+                adapter = null;
                 updateAdapter();
+
             } else {
                 audioButton.setBackgroundResource(R.drawable.stop);
                 recordController.start();
@@ -80,53 +87,82 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // долгое нажатие на аудиозаметку - удаляет ее
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (mediaPlayer != null) {
+                    mediaPlayer.stop();
+                    mediaPlayer.reset();
+                    mediaPlayer = null;
+                }
                 deleteFile(listOfNoteObjects.get(i).getName());
                 getListOfObjects();
+                adapter = null;
                 updateAdapter();
                 return true;
             }
         });
 
+        // короткое нажатие на аудиозаметку - проигрывает/ставит на паузу
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Note note = listOfNoteObjects.get(i);
-                Log.d("!!!", note.getPlaying());
-                if (note.getName().equals(workItem)) {
-                    if (note.getPlaying().equals("play")) {
-                        Log.d("!!!", "play -> pause");
-                        note.setPlaying("pause");
-                        updateAdapter();
-                        Log.d("!!!", note.getPlaying());
-                        mediaPlayer.pause();
-                    } else {
-                        Log.d("!!!", "pause/end - > play");
-                        note.setPlaying("play");
-                        updateAdapter();
-                        Log.d("!!!", note.getPlaying());
-                        mediaPlayer.start();
-                    }
+                if (mediaPlayer == null) {
+                    Log.d("!!!", "new");
+                    mediaPlayer = MediaPlayer.create(MainActivity.this, note.getUriAddress());
+                    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mediaPlayer) {
+                            if (listOfNoteObjects != null) {
+                                listOfNoteObjects.get(playingID).setPlaying(false);
+                                updateAdapter();
+                            }
+                        }
+                    });
+                    playingID = i;
+                    note.setPlaying(true);
+                    updateAdapter();
+                    mediaPlayer.start();
                 } else {
-                    if (mediaPlayer != null) {
-                        Log.d("!!!", "null player");
+                    if (i == playingID) {
+                        Log.d("!!!", "the same");
+                        if (note.getPlaying()) {
+                            Log.d("!!!", "play -> pause");
+                            note.setPlaying(false);
+                            updateAdapter();
+                            mediaPlayer.pause();
+                        } else {
+                            Log.d("!!!", "pause => play");
+                            note.setPlaying(true);
+                            updateAdapter();
+                            mediaPlayer.start();
+                        }
+                    } else {
+                        Log.d("!!!", "another");
+                        listOfNoteObjects.get(playingID).setPlaying(false);
+                        playingID = i;
+                        note.setPlaying(true);
                         updateAdapter();
                         mediaPlayer.stop();
+                        Log.d("!!!", "stop for new");
                         mediaPlayer.reset();
-                    }
-                    try {
-                        Log.d("!!!", "new player");
-                        note.setPlaying("play");
-                        workItem = note.getName();
-                        updateAdapter();
-                        mediaPlayer = MediaPlayer.create(MainActivity.this, note.getUriAddress());
+                        Log.d("!!!", "clear for new");
+                        try {
+                            mediaPlayer.setDataSource(String.valueOf(note.getUriAddress()));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        Log.d("!!!", "set uri String.valueOf(note.getUriAddress())");
+                        try {
+                            mediaPlayer.prepare();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        Log.d("!!!", "prepere for new");
                         mediaPlayer.start();
-
-                    } catch (Exception e) {
-                        Log.e("Exception", "Problems?");
-
+                        Log.d("!!!", "start new");
                     }
                 }
             }
@@ -134,13 +170,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateAdapter() {
-//        if (adapter == null) {
-        getListOfObjects();
-        adapter = new NoteAdapter(this, R.layout.music_item, listOfNoteObjects);
-        listView.setAdapter(adapter);
-//        } else {
-//            adapter.notifyDataSetChanged();
-//        }
+        if (adapter == null) {
+            adapter = new NoteAdapter(this, R.layout.music_item, listOfNoteObjects);
+            listView.setAdapter(adapter);
+        } else {
+            adapter.notifyDataSetChanged();
+        }
     }
 
     private void handleVolume(int volume) {
@@ -166,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
         for (String i : nameNotesList) {
             Uri noteUri = Uri.parse(this.getFilesDir().getAbsolutePath() + "/" + i);
             Note note = new Note(Long.valueOf(i.replace(".wav", "")),
-                    i, "stop", noteUri);
+                    i, false, noteUri);
             listOfNoteObjects.add(note);
         }
     }

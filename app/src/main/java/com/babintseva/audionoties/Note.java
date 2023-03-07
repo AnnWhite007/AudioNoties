@@ -6,9 +6,9 @@ public class Note {
     private long id;
     private String name;
     private Uri uriAddress;
-    private String isPlaying;
+    private boolean isPlaying;
 
-    public Note(long id, String name, String isPlaying, Uri uriAddress) {
+    public Note(long id, String name, boolean isPlaying, Uri uriAddress) {
         this.id = id;
         this.uriAddress = uriAddress;
         this.name = name;
@@ -31,11 +31,11 @@ public class Note {
         this.name = name;
     }
 
-    public String getPlaying() {
+    public boolean getPlaying() {
         return isPlaying;
     }
 
-    public void setPlaying(String playing) {
+    public void setPlaying(boolean playing) {
         isPlaying = playing;
     }
 
