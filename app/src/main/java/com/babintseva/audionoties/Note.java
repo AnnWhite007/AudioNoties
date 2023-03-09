@@ -8,11 +8,15 @@ public class Note {
     private Uri uriAddress;
     private boolean isPlaying;
 
-    public Note(long id, String name, boolean isPlaying, Uri uriAddress) {
+    private String noteDuration;
+
+
+    public Note(long id, String name, Uri uriAddress, boolean isPlaying, String noteDuration) {
         this.id = id;
-        this.uriAddress = uriAddress;
         this.name = name;
+        this.uriAddress = uriAddress;
         this.isPlaying = isPlaying;
+        this.noteDuration = noteDuration;
     }
 
     public long getId() {
@@ -45,5 +49,13 @@ public class Note {
 
     public void setUriAddress(Uri uriAddress) {
         this.uriAddress = uriAddress;
+    }
+
+    public String getNoteDuration() {
+        return noteDuration;
+    }
+
+    public void setNoteDuration(String noteDuration) {
+        this.noteDuration = noteDuration;
     }
 }

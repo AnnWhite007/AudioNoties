@@ -50,20 +50,13 @@ public class NoteAdapter extends ArrayAdapter<Note> {
 
         holder.nameView.setText(note.getName());
         holder.dateCreation.setText(readableDate(note.getId()));
+        holder.noteLength.setText(note.getNoteDuration());
+
         if (note.getPlaying()) {
             holder.imageView.setBackgroundResource(R.drawable.pause);
         } else {
             holder.imageView.setBackgroundResource(R.drawable.play);
         }
-
-//        mPlayer = MediaPlayer.create(getContext(), note.getUriAdress());
-//        finalTime = mPlayer.getDuration();
-//        holder.noteLength.setText(String.format("%d : %d",
-//                TimeUnit.MILLISECONDS.toMinutes((long) finalTime),
-//                TimeUnit.MILLISECONDS.toSeconds((long) finalTime) -
-//                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long)
-//                                finalTime)))
-//        );
 
         return convertView;
     }

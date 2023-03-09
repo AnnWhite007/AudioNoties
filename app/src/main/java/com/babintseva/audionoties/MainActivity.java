@@ -17,6 +17,7 @@ import android.widget.ListView;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -40,7 +41,17 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
         listView = findViewById(R.id.noteList);
+
         getListOfObjects();
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                if (listOfNoteObjects != null) {
+                    listOfNoteObjects.get(playingID).setPlaying(false);
+                    updateAdapter();
+                }
+            }
+        });
         adapter = new NoteAdapter(this, R.layout.music_item, listOfNoteObjects);
         listView.setAdapter(adapter);
 
@@ -112,15 +123,6 @@ public class MainActivity extends AppCompatActivity {
                 if (mediaPlayer == null) {
                     Log.d("!!!", "new");
                     mediaPlayer = MediaPlayer.create(MainActivity.this, note.getUriAddress());
-                    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mediaPlayer) {
-                            if (listOfNoteObjects != null) {
-                                listOfNoteObjects.get(playingID).setPlaying(false);
-                                updateAdapter();
-                            }
-                        }
-                    });
                     playingID = i;
                     note.setPlaying(true);
                     updateAdapter();
@@ -141,7 +143,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                     } else {
                         Log.d("!!!", "another");
-                        listOfNoteObjects.get(playingID).setPlaying(false);
+                        if (playingID != -1) {
+                            listOfNoteObjects.get(playingID).setPlaying(false);
+                        }
                         playingID = i;
                         note.setPlaying(true);
                         updateAdapter();
@@ -198,10 +202,26 @@ public class MainActivity extends AppCompatActivity {
             nameNotesList.add(nameNote);
         }
         Collections.sort(nameNotesList, Collections.reverseOrder());
+
         for (String i : nameNotesList) {
             Uri noteUri = Uri.parse(this.getFilesDir().getAbsolutePath() + "/" + i);
-            Note note = new Note(Long.valueOf(i.replace(".wav", "")),
-                    i, false, noteUri);
+            if (mediaPlayer == null) {
+                mediaPlayer = MediaPlayer.create(MainActivity.this, noteUri);
+            }
+            mediaPlayer.reset();
+            try {
+                mediaPlayer.setDataSource(String.valueOf(noteUri));
+                mediaPlayer.prepare();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            long size = mediaPlayer.getDuration();
+            String noteDuration = String.format("%02d : %02d",
+                    TimeUnit.MILLISECONDS.toMinutes(size),
+                    TimeUnit.MILLISECONDS.toSeconds(size) -
+                            TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(size)));
+            Note note = new Note(Long.parseLong(i.replace(".wav", "")),
+                    i, noteUri, false, noteDuration);
             listOfNoteObjects.add(note);
         }
     }
