@@ -43,15 +43,7 @@ public class MainActivity extends AppCompatActivity {
         listView = findViewById(R.id.noteList);
 
         getListOfObjects();
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                if (listOfNoteObjects != null) {
-                    listOfNoteObjects.get(playingID).setPlaying(false);
-                    updateAdapter();
-                }
-            }
-        });
+
         adapter = new NoteAdapter(this, R.layout.music_item, listOfNoteObjects);
         listView.setAdapter(adapter);
 
@@ -111,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
                 getListOfObjects();
                 adapter = null;
                 updateAdapter();
+                playingID = -1;
                 return true;
             }
         });
@@ -169,6 +162,15 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("!!!", "start new");
                     }
                 }
+                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mediaPlayer) {
+                        if (listOfNoteObjects != null) {
+                            listOfNoteObjects.get(playingID).setPlaying(false);
+                            updateAdapter();
+                        }
+                    }
+                });
             }
         });
     }
