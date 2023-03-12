@@ -87,6 +87,7 @@ public class NoteAdapter extends ArrayAdapter<Note> {
     static class ViewHolder {
         ImageView imageView;
         TextView nameView, dateCreation, noteLength;
+
     }
 }
 

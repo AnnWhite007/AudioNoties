@@ -10,18 +10,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:clickable="true"
-        android:longClickable="true">
+        android:focusable="false">
 
         <TextView
             android:id="@+id/dateCreation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/title"
-            android:clickable="false"
-            android:text="Date Time"
             android:textColor="#c8394ba4"
-            tools:textSize="14sp" />
+            tools:textSize="14sp"
+            android:focusable="false"/>
 
         <TextView
             android:id="@+id/noteLengthView"
@@ -30,8 +28,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="15dp"
             android:layout_toLeftOf="@id/playOrPause"
-            android:clickable="false"
-            android:text="Size" />
+            android:focusable="false"/>
 
         <TextView
             android:id="@+id/title"
@@ -40,10 +37,10 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:clickable="false"
             android:text="Name"
             android:textColor="#394ba4"
-            tools:textSize="16sp" />
+            tools:textSize="16sp"
+            android:focusable="false"/>
 
         <ImageView
             android:id="@+id/playOrPause"
@@ -51,14 +48,14 @@
             android:layout_height="30dp"
             android:layout_alignParentRight="true"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="10dp" />
+            android:layout_marginRight="10dp"
+            android:focusable="false"/>
 
         <SeekBar
             android:id="@+id/seekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/dateCreation"
-            android:clickable="false" />
+            android:layout_below="@id/dateCreation" />
 
 
     </RelativeLayout>
